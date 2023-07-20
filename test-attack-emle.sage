@@ -142,10 +142,10 @@ def test_attack_emle(tests,scalex=64,scalek0=20,e=163,L=None,bsize=20):
         if v is not None:
             print("| v = " + v[:15].__str__()[:-1] + ", ...)")
         if v==x:
-            print("| ...success!")
+            print("| " + CGREEN + "...success!" + CEND)
             succ += 1
         else:
-            print("| ...failed.")
+            print("| " + CRED + "...failed." + CEND)
     
     print("%d/%d correct recoveries (%.1f%% success rate)" %
         (succ, tests, 100.*float(succ/tests)))
