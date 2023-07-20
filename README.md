@@ -4,33 +4,28 @@ This repository contains example code to demonstrate the attack on
 eMLE-Sig 2.0 described in [this official comment][commenturl] on the
 pqc-forum mailing list.
 
-The attack is mounted against the SageMath implementation of eMLE-Sig 2.0
-provided in the submission package (`impl-gen.sage`), and targets the *n*
-= 64 parameter set, claimed to reach NIST Level-I security. This attack
-recovers the secret key (*x*<sub>1</sub>, *x*<sub>2</sub>) from the
-public key with good probabiliy in a few minutes (over 80% success rate
-with BKZ block size 20).
+The attack is mounted against the C reference implementation of eMLE-Sig
+2.0, and targets the *n* = 64 parameter set, claimed to reach NIST
+Level-I security. This attack recovers the vector $`\mathbf{z} \otimes
+\mathbf{x}_1`$ from sufficiently many valid signatures on arbitrary
+messages, where $`\mathbf{x}_1`$ is (half of) the signing key, and
+$`\mathbf{z} = (1,-1,0,0,\ldots,0)`$. Note that once we know this value,
+there are only at most 9 choices left for $`\mathbf{x}_1`$, and moreover
+the exact same approach also works for $`\mathbf{x}_2`$, so this is
+effectively a full key recovery attack.
 
-To run the attack on 25 keys with default settings (and a systemwide
-SageMath installation available):
+To build and run the attack:
 ```
-sage test_attack_emle.sage
+cd eMLE-Sig-I
+make test_attack
+./test_attack 1000000  #run the attack with 1,000,000 signature samples
+./test_attack          #run the attack with the default number of samples (2,500,000)
 ```
-See the code itself to tweak the settings (such as the BKZ block size in
-use).
 
 ## Remarks
 
-* The same attack is expected to break all parameter sets, not just
-  level-I, just by adjusting `scalex`, `scalek0` and `e` appropriately
-  for other levels. Appropriate preset values are forthcoming.
-  Expect somewhat slower runtimes due to higher dimensions, however.
-
-* We have taken on faith that the SageMath implementation provided by the
-  authors in their submission package is actually consistent with the C
-  implementation. Even if discrepancies exist, however, the attack should
-  carry over with only minor changes, since the analysis breaks the
-  specification itself.
+* The exact same attack is expected to break all parameter sets, not just
+  level-I. Corresponding experiments are forthcoming.
 
 —Mehdi Tibouchi, July 20, 2023.
 
