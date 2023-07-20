@@ -6,13 +6,16 @@ pqc-forum mailing list.
 
 The attack is mounted against the C reference implementation of eMLE-Sig
 2.0, and targets the *n* = 64 parameter set, claimed to reach NIST
-Level-I security. This attack recovers the vector $`\mathbf{z} \otimes
-\mathbf{x}_1`$ from sufficiently many valid signatures on arbitrary
-messages, where $`\mathbf{x}_1`$ is (half of) the signing key, and
-$`\mathbf{z} = (1,-1,0,0,\ldots,0)`$. Note that once we know this value,
-there are only at most 9 choices left for $`\mathbf{x}_1`$, and moreover
-the exact same approach also works for $`\mathbf{x}_2`$, so this is
-effectively a full key recovery attack.
+Level-I security.
+
+With the notation of the eMLE-Sig 2.0 specification, this attack recovers
+the vector $`\mathbf{z} \otimes \mathbf{x}_1`$ from sufficiently many
+valid signatures on arbitrary messages, where $`\mathbf{x}_1`$ is (half
+of) the signing key, and $`\mathbf{z} = (1,-1,0,0,\ldots,0)`$.
+
+Note that once we know this value, there are only at most 9 choices left
+for $`\mathbf{x}_1`$, and moreover the exact same approach also works for
+$`\mathbf{x}_2`$, so this is effectively a full key recovery attack.
 
 To build and run the attack:
 ```
