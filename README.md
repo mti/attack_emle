@@ -32,4 +32,4 @@ make test_attack
 
 —Mehdi Tibouchi, July 20, 2023.
 
-[commenturl]: https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/zas5PLiBe6A/m/EVmNzzglBQAJ
+[commenturl]: https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/zas5PLiBe6A/m/APUe-wfXBQAJ
