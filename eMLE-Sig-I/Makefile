@@ -6,6 +6,9 @@ BENCHMARK_OBJS = impl.o fips202.o conv.o aes256ctr.o randvec.o rng_benchmark.o b
 PQCgenKAT_sign: $(OBJS)
 	gcc $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
+test_attack: test_attack.o fips202.o conv.o aes256ctr.o randvec.o rng_benchmark.o
+	gcc $(CFLAGS) -o $@ $^ $(LDFLAGS) -lm
+
 benchmark: $(BENCHMARK_OBJS)
 	gcc $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
