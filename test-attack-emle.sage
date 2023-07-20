@@ -151,8 +151,8 @@ def test_attack_emle(tests,scalex=64,scalek0=20,e=163,L=None,bsize=20):
         (succ, tests, 100.*float(succ/tests)))
         
 def test_attack_keygen(tests,scalex=64,scalek0=20,e=163,L=None,bsize=20):
-    print("Attack against eMLE-Sign 2.0 keys")
-    print("---------------------------------")
+    print("Attack against eMLE-Sig 2.0 keys")
+    print("--------------------------------")
     succ = 0
     if L is None:
         print("Precompute key-independent reduction:")
