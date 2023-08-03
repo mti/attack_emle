@@ -32,4 +32,13 @@ make test_attack
 
 —Mehdi Tibouchi, July 20, 2023.
 
+## Update (2023–08–03)
+
+The attack has been adapted to the *revised* scheme proposed by the
+eMLE-Sig 2.0 submitters, by simply *reducing* the number of signatures
+necessary for recovery. See [this comment][commentrevision] on the
+mailing list for an explanation of why essentially no change was
+necessary.
+
 [commenturl]: https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/zas5PLiBe6A/m/APUe-wfXBQAJ
+[commentrevision]: https://groups.google.com/a/list.nist.gov/g/pqc-forum/c/zas5PLiBe6A/m/OYNb3WevAAAJ
