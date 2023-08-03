@@ -348,24 +348,29 @@ static void gen_pkh(uint8_t *pkh, const pubkey_t* pk, const size_t n)
 void keygen(pubkey_t* pk, privkey_t* sk, const size_t n, const uint8_t seed[32]){
     aes256ctr_ctx ctx;
     uint8_t nonce[12]={0};
+    int i;
 
     mkPG(n);
 
     aes256ctr_init(&ctx, seed, nonce);
 
     int64_t sumX;
-    do {
+    {
         randVec_xmax(sk->x1, n, &ctx);
         randVec_xmax(sk->x2, n, &ctx);
+        ///for(i=0; i < n; i++){
+        //     sk->x1[i] = sk->x1[i]*sk->x2[i];   
+        //}
+
         sumX = sumList(sk->x1, n) + sumList(sk->x2, n);
         sumX ^= (-(ct_lt(sumX, 0) >> 63)) & (sumX ^ (-sumX));
-    } while (1 ^ (ct_lt(sumX, n/2) >> 63));
+    } 
 
     int64_t sumR;
-    do {
+    {
         sumR = eMLE(sk->x1, pk->h1, sk->F1, n, G[1], 0, &ctx) + eMLE(sk->x2, pk->h2, sk->F2, n, G[1], 0, &ctx);
         sumR ^= (-(ct_lt(sumR, 0) >> 63)) & (sumR ^ (-sumR));
-    } while (1 ^ (ct_lt(sumR, n*n) >> 63));
+    } 
 
     gen_pkh(sk->pkh, pk, n);
 }
@@ -433,9 +438,15 @@ void sign(signature_t* sig, const privkey_t* sk, const uint8_t* m, const size_t 
     hashVec(c1, c2, m, mlen, NULL, sk->pkh, n);
     add(c1, c2, cp, n);
 
+    int64_t yp[N_MAX];
     int64_t y[N_MAX];
-    do {
+    {
         randVec_y(y, n, sumXn, sumXp, &ctx);
+
+        //In the revised version, y's element is from -4 to 4;
+        for(i=0; i < n ; i++)
+            y[i] =  y[i]%9-4;
+
         eMLE(y, sig->u, F, n, cp, 1, &ctx);
 
         hashVec(c1, c2, m, mlen, sig->u, sk->pkh, n);
@@ -443,8 +454,15 @@ void sign(signature_t* sig, const privkey_t* sk, const uint8_t* m, const size_t 
         conv_0(sig->s, c1, sk->x1);
         conv_0(c, sk->x2, c2);
         add(sig->s, c, sig->s, n);
-        add(sig->s, y, sig->s, n);
-    } while (!check(sk, sig, c1, c2, cp, F, n));
+
+        for(i=0; i<n; i++){
+                cp[i] = c2[i] + c1[i];
+        }    
+
+        conv_0(c, y, cp);
+        add(sig->s, c, sig->s, n);
+        //add(sig->s, y, sig->s, n);
+    }
 }
 
 int verify(const pubkey_t* pk, const uint8_t* m, const size_t mlen, const signature_t* sig, const size_t n){

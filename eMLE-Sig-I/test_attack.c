@@ -12,7 +12,7 @@
 #include "nist.c"
 
 #define MLEN 16
-#define NSAMPLES 2500000
+#define NSAMPLES 350000
 
 void print_progress(size_t count, size_t max, double u[], double v[]) {
     const int bar_width = 50;
@@ -52,6 +52,7 @@ int main(int argc, char** argv)
     uint8_t pk[CRYPTO_PUBLICKEYBYTES];
     uint8_t sk[CRYPTO_SECRETKEYBYTES];
     uint8_t pkh[64];
+    uint8_t seed[32];
 
     pubkey_t    pkey;
     privkey_t   skey;
@@ -78,8 +79,8 @@ int main(int argc, char** argv)
     for (int i=0; i < nsamples; i++) {
         randombytes(m, MLEN);
 
-        crypto_sign(sm, &smlen, m, MLEN, sk);
-        unpack_sig(&sig, sm);
+        randombytes(seed, 32);
+        sign(&sig, &skey, m, MLEN, n, seed);
 
         int64_t c1[N_MAX], c2[N_MAX];
         hashVec(c1, c2, m, MLEN, sig.u, pkh, n);
@@ -105,35 +106,6 @@ int main(int argc, char** argv)
     printf("delta  = [");
     for(size_t j=0; j<n; j++)
         printf("%ld%s", lround(x1z[j]) - lround(x1zrec[j]/nsamples), (j==n-1)?"]\n":", ");
-    /*
-    print_progress(nsamples, nsamples, x1z, x1zrec);
-    printf("\n\n");
-
-    for(j=0; j<N; j++)
-        Grec[j] /= (double)nsamples;
-
-    double dotp = 0., normG = 0., normGrec = 0., factor;
-    int reccoeffs = 0;
-    for(j=0; j<N; j++) {
-        normGrec += Grec[j] * Grec[j];
-        normG    += G[0].vec[0].coeffs[j] * G[0].vec[0].coeffs[j];
-        dotp     += Grec[j] * G[0].vec[0].coeffs[j];
-    }
-
-    factor = sqrt(2.*N/normGrec/3.);
-    for(int j=0; j<N; j++) {
-        Grec[j] *= factor;
-        reccoeffs += (lround(Grec[j]) == G[0].vec[0].coeffs[j]);
-    }
-    
-    printf("Out of %d total signatures, %d had c[0]==1 or c[0]==-1 (%.2f%%).\n",
-            nsamples, select, 100.*((double)select) / ((double)nsamples));
-    printf("Correlation between recovered G and real one: %.3f.\n",
-            dotp/sqrt(normG*normGrec));
-    printf("Number of correctly recovered coefficients by rounding: %d/%d\n",
-            reccoeffs, N);
-
-    */
     return 0;
 }
 
